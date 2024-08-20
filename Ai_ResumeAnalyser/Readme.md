@@ -7,13 +7,13 @@ This Django-based application allows users to upload their resumes and job descr
 
 # Features
 
-- Custom Algorithms**: This application is built purely on custom algorithms without relying on any external APIs or services for information extraction.
-- Resume and Job Description Parsing**: Extracts key information such as skills, experience, education, and more from uploaded resumes and job descriptions.
-- Skills Comparison**: Compares the skills extracted from the resume with those in the job description and identifies matching and missing skills.
-- Skills Recommendation**: Provides recommendations for skills that are relevant to the job description but not present in the resume.
-- Multiple Skills Datasets**: Supports the management of multiple skills datasets, allowing for the storage of different skill sets in separate folders.
-- Admin Portal**: Manage skills datasets and other data through the Django admin portal.
-- Secure File Upload**: Upload and manage resumes, job descriptions, and skills datasets securely.
+- Custom Algorithms: This application is built purely on custom algorithms without relying on any external APIs or services for information extraction.
+- Resume and Job Description Parsing: Extracts key information such as skills, experience, education, and more from uploaded resumes and job descriptions.
+- Skills Comparison: Compares the skills extracted from the resume with those in the job description and identifies matching and missing skills.
+- Skills Recommendation: Provides recommendations for skills that are relevant to the job description but not present in the resume.
+- Multiple Skills Datasets: Supports the management of multiple skills datasets, allowing for the storage of different skill sets in separate folders.
+- Admin Portal: Manage skills datasets and other data through the Django admin portal.
+- Secure File Upload: Upload and manage resumes, job descriptions, and skills datasets securely.
 
 # Installation
 
