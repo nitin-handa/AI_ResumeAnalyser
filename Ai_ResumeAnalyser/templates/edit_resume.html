@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Resume</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        #editor-container {
+            height: 400px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Resume</h1>
+    <form method="POST" action="{% url 'edit_resume' serial_number=serial_number %}">
+        {% csrf_token %}
+        <div id="editor-container"></div>
+        <input type="hidden" name="resume_content" id="resume-content" value="{{ resume_text|safe }}">
+        <input type="hidden" name="serial_number" value="{{ serial_number }}">
+        <button type="submit">Save</button>
+    </form>
+    
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var quill = new Quill('#editor-container', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': '1' }, { 'header': '2' }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['bold', 'italic', 'underline'],
+                        ['link'],
+                        [{ 'align': [] }],
+                        ['clean']
+                    ]
+                }
+            });
+
+            var existingContent = document.getElementById('resume-content').value;
+            quill.root.innerHTML = existingContent;
+
+            document.querySelector('form').addEventListener('submit', function() {
+                document.getElementById('resume-content').value = quill.root.innerHTML;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,584 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Analysis</title>
+  <style>
+    .error {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  width: 320px;
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  background: #EF665B;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px -3px #111;
+}
+
+.error__icon {
+  width: 20px;
+  height: 20px;
+  transform: translateY(-2px);
+  margin-right: 8px;
+}
+
+.error__icon path {
+  fill: #fff;
+}
+
+.error__title {
+  font-weight: 500;
+  font-size: 14px;
+  color: #fff;
+}
+
+.error__close {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.error__close path {
+  fill: #fff;
+}
+    /* Add your CSS styles here */
+    /* CSS styles */
+    .inputbox {
+      position: relative;
+      width: 196px;
+    }
+
+    /* heading */
+    .he {
+      color: white;
+      text-decoration: none;
+      font-size: 25px;
+      border: none;
+      background: none;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .he::before {
+      margin-left: auto;
+    }
+
+    .he::after,
+    .he::before {
+      content: '';
+      width: 0%;
+      height: 2px;
+      background: #45f3ff;
+      display: block;
+      transition: 0.5s;
+    }
+
+    button:hover::after,
+    button:hover::before {
+      width: 100%;
+    }
+
+    /* upload buttons */
+    .btn {
+      --color: #45f3ff;
+      --color2: rgb(10, 25, 30);
+      /* padding: 0.8em 1.75em; */
+      background-color: transparent;
+      border-radius: 6px;
+      border: .3px solid var(--color);
+      transition: .5s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      z-index: 1;
+      /* font-weight: 300; */
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      text-transform: uppercase;
+      color: var(--color);
+    }
+
+    .btn::after,
+    .btn::before {
+      content: '';
+      display: block;
+      height: 100%;
+      width: 100%;
+      transform: skew(90deg) translate(-50%, -50%);
+      position: absolute;
+      inset: 50%;
+      left: 25%;
+      z-index: -1;
+      transition: .5s ease-out;
+      background-color: var(--color);
+    }
+
+    .btn::before {
+      top: -50%;
+      left: -25%;
+      transform: skew(90deg) rotate(180deg) translate(-50%, -50%);
+    }
+
+    .btn:hover::before {
+      transform: skew(45deg) rotate(180deg) translate(-50%, -50%);
+    }
+
+    .btn:hover::after {
+      transform: skew(45deg) translate(-50%, -50%);
+    }
+
+    .btn :hover {
+      color: var(--color2);
+    }
+
+
+    .btn:active {
+      filter: brightness(.7);
+      transform: scale(.98);
+    }
+
+    /* input box */
+    .inputbox input {
+      position: relative;
+      width: 100%;
+      padding: 20px 10px 10px;
+      background: transparent;
+      outline: none;
+      box-shadow: none;
+      border: none;
+      color: #23242a;
+      font-size: 1em;
+      letter-spacing: 0.05em;
+      transition: 0.5s;
+      z-index: 10;
+    }
+
+    .inputbox span {
+      position: absolute;
+      left: 0;
+      padding: 20px 10px 10px;
+      font-size: 1em;
+      color: #8f8f8f;
+      letter-spacing: 00.05em;
+      transition: 0.5s;
+      pointer-events: none;
+    }
+
+    .inputbox input:valid~span,
+    .inputbox input:focus~span {
+      color: #45f3ff;
+      transform: translateX(-10px) translateY(-34px);
+      font-size: 0, 75em;
+    }
+
+    .inputbox i {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background: #45f3ff;
+      border-radius: 4px;
+      transition: 0.5s;
+      pointer-events: none;
+      z-index: 9;
+    }
+
+    .inputbox input:valid~i,
+    .inputbox input:focus~i {
+      height: 44px;
+    }
+
+    /* select input */
+    /* .custom-file-input {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+}
+.custom-file-input label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.custom-file-input select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    appearance: none;
+}
+.custom-file-input select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+.custom-file-input .file-name {
+    display: block;
+    margin-top: 10px;
+    font-style: italic;
+    color: #888;
+} */
+
+    .custom-file-input {
+      background-color: #1E1E1E;
+      /* Dark background color for the input container */
+      padding: 20px;
+      /* border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+      max-width: 400px;
+      margin: 20px auto;
+
+    }
+
+    /* .custom-file-input label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #E0E0E0; 
+} */
+
+    .custom-file-input select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #555;
+      /* Darker border color */
+      border-radius: 4px;
+      background-color: #333;
+      /* Dark background color for the select */
+      color: #E0E0E0;
+      /* Light text color */
+      font-size: 16px;
+      appearance: none;
+    }
+
+    .custom-file-input select:focus {
+      border-color: #45f3ff;
+      /* border-color: #007BFF; */
+      outline: none;
+    }
+
+    .custom-file-input option {
+      background: transparent;
+      color: #E0E0E0;
+    }
+
+    /* submit button */
+    .sub button {
+      padding: 0;
+      margin: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .sub button {
+      --primary-color: #ffffff;
+      --hovered-color: #45f3ff;
+      position: relative;
+      display: flex;
+      font-weight: 600;
+      font-size: 20px;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sub button p {
+      margin: 0;
+      position: relative;
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+    .sub button::after {
+      position: absolute;
+      content: "";
+      width: 0;
+      left: 0;
+      bottom: -7px;
+      background: var(--hovered-color);
+      height: 2px;
+      transition: 0.3s ease-out;
+    }
+
+    .sub button p::before {
+      position: absolute;
+      /*   box-sizing: border-box; */
+      content: "Submit";
+      width: 0%;
+      inset: 0;
+      color: var(--hovered-color);
+      overflow: hidden;
+      transition: 0.3s ease-out;
+    }
+
+    .sub button:hover::after {
+      width: 100%;
+    }
+
+    .sub button:hover p::before {
+      width: 100%;
+    }
+
+    .sub button:hover svg {
+      transform: translateX(4px);
+      color: var(--hovered-color);
+    }
+
+    .sub button svg {
+      color: var(--primary-color);
+      transition: 0.2s;
+      position: relative;
+      width: 15px;
+      transition-delay: 0.2s;
+    }
+
+
+    /* old css */
+
+    body {
+      font-family: Arial, sans-serif;
+      /* background-color: #000000; */
+      background-image: url("{% static 'images/back_1.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #1e1c1c;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 1s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* background-image: url('https://source.unsplash.com/random/1920x1080/?ai,technology'); */
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px) brightness(0.8);
+      z-index: 0;
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .file-input {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .file-input input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-input label {
+      display: inline-block;
+      padding: 10px 20px;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    /* .file-input label:hover{
+      color:rgb(10, 25, 30);
+    } */
+
+    .file-input .file-name {
+      display: none;
+      margin-top: 5px;
+      font-size: 14px;
+      /* color: #ffffff; */
+    }
+
+    .file-input input[type="file"]:valid+label+.file-name {
+      display: block;
+    }
+
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #3e8e41;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="container">
+    <h1 style="margin-top: 0px;">Resume Analysis</h1>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="custom-file-input file-input" style="width:260px;">
+        <select name="inputFormat" id="inputFormat" onchange="toggleInputs()">
+          <option value="" disabled selected>Select input format</option>
+          <option value="document">document</option>
+          <option value="Text">Text</option>
+        </select>
+        <span class="file-name"></span>
+      </div>
+      <div id="fileInputs" class="hidden">
+        <div id="resumeUpload" class="btn file-input">
+          <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx,.txt">
+          <label for="resume" style="background-color: transparent;">Choose Resume</label>
+          <span class="file-name"></span>
+        </div>
+        <div id="jobDescriptionUpload" class="btn file-input">
+          <input type="file" id="jobDescription" name="job_description" accept=".pdf,.doc,.docx,.txt">
+          <label for="jobDescription" style="background-color: transparent;">Choose <br>Job Description</label>
+          <span class="file-name"></span>
+        </div>
+      </div>
+      <div id="textInputs" class="hidden">
+        <div class="inputbox file-input">
+          <input type="text" name="resumeText" placeholder="Enter Resume Text">
+          <span class="file-name"></span>
+          <i></i>
+        </div>
+        <div class="inputbox file-input">
+          <input type="text" name="jobDescriptionText" placeholder="Enter Job Description Text">
+          <span class="file-name"></span>
+          <i></i>
+        </div>
+      </div>
+      <div class="custom-file-input file-input">
+        <select name="jobField" id="jobField">
+          <option value="" disabled selected>Select Job Field</option>
+          {% for field in job_fields %}
+          <option value="{{field}}">{{field}}</option>
+          {% endfor %}
+          <option value="other">Other</option>
+        </select>
+        <span class="file-name"></span>
+      </div>
+      <div class="inputbox file-input">
+        <input required="required" type="text" name="jobProfile" placeholder="Job Profile">
+        <span class="file-name"></span>
+        <i></i>
+      </div>
+      <div class="sub file-input">
+        <button type="submit">
+          <p>Submit</p>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleInputs() {
+      const inputFormat = document.getElementById('inputFormat').value;
+      const fileInputs = document.getElementById('fileInputs');
+      const textInputs = document.getElementById('textInputs');
+      const resumeTextInput = document.querySelector('input[name="resumeText"]');
+      const jobDescriptionTextInput = document.querySelector('input[name="jobDescriptionText"]');
+
+      if (inputFormat === 'Text') {
+        fileInputs.classList.add('hidden');
+        textInputs.classList.remove('hidden');
+        resumeTextInput.required = true;
+        jobDescriptionTextInput.required = true;
+      } else {
+        fileInputs.classList.remove('hidden');
+        textInputs.classList.add('hidden');
+        resumeTextInput.required = false;
+        jobDescriptionTextInput.required = false;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const fileInputs = document.querySelectorAll('.file-input input[type="file"]');
+      const submitButton = document.querySelector('button[type="submit"]');
+
+      fileInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          const fileName = input.value.split('\\').pop();
+          const fileNameSpan = input.nextElementSibling.nextElementSibling;
+          fileNameSpan.textContent = fileName;
+
+          // Check if files are in allowed formats
+          const allowedExtensions = /\.(pdf|doc|docx|txt)$/i; // Updated regular expression
+
+          if (!allowedExtensions.exec(fileName)) {
+            console.log(1)
+            alert('Please upload only PDF, DOC, DOCX, or TXT files.');
+            input.value = '';
+            fileNameSpan.textContent = '';
+            submitButton.setAttribute('disabled', 'disabled');
+          } else {
+            // Check if both files are selected
+            const resumeInput = document.getElementById('resume');
+            const jobDescriptionInput = document.getElementById('jobDescription');
+            if (resumeInput.files.length > 0 && jobDescriptionInput.files.length > 0) {
+              submitButton.removeAttribute('disabled');
+            } else {
+              submitButton.setAttribute('disabled', 'disabled');
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

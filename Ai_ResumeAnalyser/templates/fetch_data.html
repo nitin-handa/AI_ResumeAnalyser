@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume and Enter Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'images/back_1.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1e1c1c;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 1s ease;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .inputbox {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .inputbox input[type="text"],
+        .inputbox input[type="file"] {
+            width: 100%;
+            padding: 20px 10px 10px;
+            background: transparent;
+            outline: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1em;
+            letter-spacing: 0.05em;
+            transition: 0.5s;
+        }
+
+        .inputbox span {
+            position: absolute;
+            left: 0;
+            padding: 20px 10px 10px;
+            font-size: 1em;
+            color: #8f8f8f;
+            letter-spacing: 0.05em;
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .inputbox input:valid~span,
+        .inputbox input:focus~span {
+            color: #45f3ff;
+            transform: translateX(-10px) translateY(-34px);
+            font-size: 0.75em;
+        }
+
+        .inputbox i {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: #45f3ff;
+            border-radius: 4px;
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .inputbox input:valid~i,
+        .inputbox input:focus~i {
+            height: 44px;
+        }
+
+        .file-input input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input label {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #45f3ff;
+        }
+
+        .file-input label:hover {
+            background-color: #3e8e41;
+        }
+
+        .file-input .file-name {
+            display: none;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .file-input input[type="file"]:valid+label+.file-name {
+            display: block;
+        }
+
+        .sub button {
+            padding: 10px 20px;
+            background-color: #45f3ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sub button:hover {
+            background-color: #3e8e41;
+        }
+
+        .sub button svg {
+            width: 15px;
+            transition: transform 0.2s;
+        }
+
+        .sub button:hover svg {
+            transform: translateX(4px);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Upload Resume and Enter Details</h1>
+        <form id="uploadForm" action="{% url 'fetch_data' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="inputbox">
+                <input type="text" name="s_id" placeholder="Enter superUserId" required>
+                <span>Enter superUserId</span>
+                <i></i>
+            </div>
+            <div class="inputbox">
+                <input type="text" name="s_pass" placeholder="Enter superUserPassword" required>
+                <span>Enter superUserPassword</span>
+                <i></i>
+            </div>
+            <div class="inputbox file-input">
+                <input type="file" name="pdf_file" accept="application/pdf" required>
+                <label for="pdf_file">Choose a PDF file</label>
+                <span class="file-name">Choose a PDF file</span>
+                <i></i>
+            </div>
+            <div class="sub">
+                <button type="submit">
+                    <p>Submit</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

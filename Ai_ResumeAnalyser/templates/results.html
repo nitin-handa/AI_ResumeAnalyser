@@ -1,0 +1,462 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Results</title>
+    <style>
+        /* Existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'images/back_1.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .result {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #181616;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .section-content {
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #2a2a2a;
+        }
+
+        .skill-button {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            border: 3px solid #45f3ff;
+            border-radius: 5px;
+            cursor: pointer;
+            background: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .resume-skill {
+            color: white;
+        }
+
+        .selected {
+            border: 3px solid #45f3ff;
+        }
+
+        .recommended-skill {
+            background: transparent;
+            color: white;
+            border: 3px solid white;
+        }
+
+        .recommended-skill:hover {
+            background-color: #45f3ff;
+            border: 3px solid #45f3ff;
+        }
+
+        .recommended-skill.selected {
+            color: #fff;
+            border: 3px solid #45f3ff;
+        }
+
+        .non-working {
+            pointer-events: none;
+        }
+
+        #unselected-skills {
+            display: none;
+        }
+
+        /* Existing button styles */
+        .sub button {
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .sub button {
+            --primary-color: #ffffff;
+            --hovered-color: #45f3ff;
+            position: relative;
+            display: flex;
+            font-weight: 600;
+            font-size: 14px;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .sub button p {
+            margin: 0;
+            position: relative;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+
+        .sub button::after {
+            position: absolute;
+            content: "";
+            width: 0;
+            left: 0;
+            bottom: -7px;
+            background: var(--hovered-color);
+            height: 2px;
+            transition: 0.3s ease-out;
+        }
+
+        .sub button p::before {
+            position: absolute;
+            content: "Submit";
+            width: 0%;
+            inset: 0;
+            color: var(--hovered-color);
+            overflow: hidden;
+            transition: 0.3s ease-out;
+        }
+
+        .sub button:hover::after {
+            width: 100%;
+        }
+
+        .sub button:hover p::before {
+            width: 100%;
+        }
+
+        .sub button:hover svg {
+            transform: translateX(4px);
+            color: var(--hovered-color);
+        }
+
+        .sub button svg {
+            color: var(--primary-color);
+            transition: 0.2s;
+            position: relative;
+            width: 15px;
+            transition-delay: 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Resume Analysis Results</h1>
+    <div class="result">
+        <div class="section">
+            <p class="section-title">Your Resume Matching with Job Description:</p>
+            <div class="section-content" style="color: #45f3ff;">{{ matching_percentage }} %</div>
+        </div>
+        <div class="section">
+            <p class="section-title">Your Resume have these Skills:</p>
+            <div class="section-content">
+                {% for skill in resume_skills %}
+                <span class="skill-button resume-skill non-working">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="section">
+            <p class="section-title">Matched Skills With Job Description:</p>
+            <div class="section-content">
+                {% for skill in matching_skills %}
+                <span class="skill-button resume-skill non-working">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <form id="save-form" action="/save_skills" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="serial_number" value="{{ serial_number }}">
+            <input type="hidden" name="job_description_skills" value="{{ job_description_skills }}">
+            <div class="section">
+                <p class="section-title">We have Recommended Skills for you:</p>
+                <div class="section-content" id="recommended-skills">
+                    {% for skill in recommend_skills %}
+                    <button type="button" class="skill-button recommended-skill" data-skill="{{ skill }}">{{ skill }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="hidden" name="selected_skills[]" id="selected-skills-input">
+            <input type="hidden" name="unselected_skills[]" id="unselected-skills-input">
+
+            <div class="sub">
+                <button type="submit">
+                    <p>Submit</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const recommendedSkillButtons = document.querySelectorAll('.recommended-skill');
+            const selectedSkillsInput = document.getElementById('selected-skills-input');
+            const unselectedSkillsInput = document.getElementById('unselected-skills-input');
+            const saveForm = document.getElementById('save-form');
+            const recommendedSkillsDiv = document.getElementById('recommended-skills');
+    
+            recommendedSkillButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('selected');
+                    updateSelectedSkills();
+                    updateUnselectedSkills();
+                });
+            });
+    
+            saveForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const selectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => button.classList.contains('selected'))
+                    .map(button => button.textContent.trim());
+    
+                const unselectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => !button.classList.contains('selected'))
+                    .map(button => button.getAttribute('data-skill').trim());
+    
+                selectedSkillsInput.value = selectedSkills.join(',');
+                unselectedSkillsInput.value = unselectedSkills.join(',');
+    
+                saveForm.submit();
+            });
+    
+            function updateSelectedSkills() {
+                const selectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => button.classList.contains('selected'))
+                    .map(button => button.textContent.trim());
+                selectedSkillsInput.value = selectedSkills.join(',');
+            }
+    
+            function updateUnselectedSkills() {
+                const unselectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => !button.classList.contains('selected'))
+                    .map(button => button.getAttribute('data-skill').trim());
+                unselectedSkillsInput.value = unselectedSkills.join(',');
+            }
+        });
+    </script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a0a;
+            margin: 0;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(24, 22, 22, 0.8);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(69, 243, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #45f3ff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(69, 243, 255, 0.5);
+        }
+
+        .result-box {
+            background-color: #181616;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(69, 243, 255, 0.1);
+        }
+
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #45f3ff;
+            font-size: 1.2em;
+        }
+
+        .result-content {
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .matching-percentage {
+            font-size: 2em;
+            color: #45f3ff;
+            text-align: center;
+        }
+
+        .skill-button {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            border: 2px solid #45f3ff;
+            border-radius: 20px;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+
+        .resume-skill {
+            opacity: 0.8;
+        }
+
+        .recommended-skill:hover, .recommended-skill.selected {
+            background-color: rgba(69, 243, 255, 0.2);
+            box-shadow: 0 0 10px rgba(69, 243, 255, 0.5);
+        }
+
+        .submit-button {
+            background: none;
+            border: none;
+            color: #45f3ff;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .submit-button:hover {
+            text-shadow: 0 0 10px rgba(69, 243, 255, 0.8);
+        }
+
+        .neuron-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%2345f3ff" opacity="0.5"/><circle cx="20" cy="30" r="1.5" fill="%2345f3ff" opacity="0.3"/><circle cx="80" cy="70" r="1.8" fill="%2345f3ff" opacity="0.4"/></svg>');
+            background-size: 200px 200px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="neuron-bg"></div>
+    <div class="container">
+        <h1>Resume Analysis Results</h1>
+        <div class="result-box">
+            <div class="result-title">Resume Matching with Job Description</div>
+            <div class="result-content">
+                <div class="matching-percentage">{{ matching_percentage }}%</div>
+            </div>
+        </div>
+        <div class="result-box">
+            <div class="result-title">Skills in Your Resume</div>
+            <div class="result-content">
+                {% for skill in resume_skills %}
+                <span class="skill-button resume-skill">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="result-box">
+            <div class="result-title">Skills Matched with Job Description</div>
+            <div class="result-content">
+                {% for skill in matching_skills %}
+                <span class="skill-button resume-skill">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <form id="save-form" action="/save_skills" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="serial_number" value="{{ serial_number }}">
+            <input type="hidden" name="job_description_skills" value="{{ job_description_skills }}">
+            <div class="result-box">
+                <div class="result-title">Recommended Skills for You</div>
+                <div class="result-content" id="recommended-skills">
+                    {% for skill in recommend_skills %}
+                    <button type="button" class="skill-button recommended-skill" data-skill="{{ skill }}">{{ skill }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="hidden" name="selected_skills[]" id="selected-skills-input">
+            <input type="hidden" name="unselected_skills[]" id="unselected-skills-input">
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const recommendedSkillButtons = document.querySelectorAll('.recommended-skill');
+            const selectedSkillsInput = document.getElementById('selected-skills-input');
+            const unselectedSkillsInput = document.getElementById('unselected-skills-input');
+            const saveForm = document.getElementById('save-form');
+
+            recommendedSkillButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('selected');
+                    updateSelectedSkills();
+                    updateUnselectedSkills();
+                });
+            });
+
+            saveForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                updateSelectedSkills();
+                updateUnselectedSkills();
+                saveForm.submit();
+            });
+
+            function updateSelectedSkills() {
+                const selectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => button.classList.contains('selected'))
+                    .map(button => button.textContent.trim());
+                selectedSkillsInput.value = selectedSkills.join(',');
+            }
+
+            function updateUnselectedSkills() {
+                const unselectedSkills = Array.from(recommendedSkillButtons)
+                    .filter(button => !button.classList.contains('selected'))
+                    .map(button => button.getAttribute('data-skill').trim());
+                unselectedSkillsInput.value = unselectedSkills.join(',');
+            }
+        });
+    </script>
+</body>
+
+</html>
