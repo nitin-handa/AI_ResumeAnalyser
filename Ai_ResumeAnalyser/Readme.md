@@ -6,7 +6,7 @@
 This Django-based application allows users to upload their resumes and job descriptions,
  extract relevant skills, and compare them to find matching skills. Additionally,
  the application provides recommendations for skills that are relevant to the job
-description but not present in the resume. 
+ description but not present in the resume. 
 
 # Features
 
