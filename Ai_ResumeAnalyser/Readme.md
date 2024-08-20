@@ -1,11 +1,11 @@
-Here's the updated `README.md` with the details about database tables, rows, and the information they extract:
+
 
 ```markdown
 # Resume Builder and Skills Matching Application
 
 This Django-based application allows users to upload their resumes and job descriptions, extract relevant skills, and compare them to find matching skills. Additionally, the application provides recommendations for skills that are relevant to the job description but not present in the resume. 
 
-## Features
+# Features
 
 - Custom Algorithms**: This application is built purely on custom algorithms without relying on any external APIs or services for information extraction.
 - Resume and Job Description Parsing**: Extracts key information such as skills, experience, education, and more from uploaded resumes and job descriptions.
@@ -15,12 +15,12 @@ This Django-based application allows users to upload their resumes and job descr
 - Admin Portal**: Manage skills datasets and other data through the Django admin portal.
 - Secure File Upload**: Upload and manage resumes, job descriptions, and skills datasets securely.
 
-## Installation
+# Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/resume-skills-matching.git
-   cd resume-skills-matching
+   git clone https://github.com/nitin-handa/AI_ResumeAnalyser/.git
+   cd AI_ResumeAnalyser
    ```
 
 2. Install the required dependencies:
@@ -35,7 +35,7 @@ This Django-based application allows users to upload their resumes and job descr
 
 4. Create a superuser for the Django admin portal:
    ```bash
-   python manage.py createsuperuser
+   python manage.py c
    ```
 
 5. Run the development server:
@@ -118,5 +118,3 @@ Contributions are welcome! Feel free to submit issues, fork the repository, and 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ```
-
-This `README.md` now includes a detailed explanation of the database tables, the information they extract, and how they are used within the application.
